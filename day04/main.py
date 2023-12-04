@@ -4,8 +4,8 @@ from util import Source
 def part1(input):
     return sum(score_card(line) for line in input)
 
-MY_NUMBER_RE = r":\s*([0-9\s]+)"
-WINNING_NUMBER_RE = r"\|\s*([0-9\s]+)"
+WINNING_NUMBER_RE = r":\s*([0-9\s]+)"
+MY_NUMBER_RE = r"\|\s*([0-9\s]+)"
 def score_card(card):
     my_matched = re.findall(MY_NUMBER_RE, card)
     assert my_matched
@@ -15,7 +15,7 @@ def score_card(card):
     assert winning_matched
     winning_numbers = set(winning_matched[0].split())
     my_winning = sum(1 for n in my_numbers if n in winning_numbers)
-    return my_winning ^ 2
+    return pow(2, my_winning-1) if my_winning else 0
 
     
 
