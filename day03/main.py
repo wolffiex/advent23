@@ -8,25 +8,19 @@ def part2(input):
     for y in range(len(grid)):
         line = grid[y]
         current_number, current_gears = "", set()
-
-        def add_current():
-            nonlocal current_number, current_gears
-            if current_number:
-                for gear in current_gears:
-                    if gear:
-                        gears[gear].append(int(current_number))
-            current_number, current_gears = "", set()
-
-        for x in range(len(line)):
-            c = line[x]
+        for x in range(len(line) + 1):
+            c = line[x] if x < len(line) else ""
             if not c.isdigit():
-                add_current()
+                if current_number:
+                    for gear in current_gears:
+                        if gear:
+                            gears[gear].append(int(current_number))
+                current_number, current_gears = "", set()
             else:
                 current_number += c
                 for xx in range(x - 1, x + 2):
                     for yy in range(y - 1, y + 2):
                         current_gears.add(check_gear(grid, xx, yy))
-        add_current()
     return sum(
         parts[0] * parts[1] 
         for parts in gears.values() 
@@ -40,28 +34,19 @@ def part1(input):
     for y in range(len(grid)):
         line = grid[y]
         current_number, is_adjacent = "", False
-
-        def add_current():
-            nonlocal current_number, is_adjacent, total
-            if current_number:
-                # print(f"{current_number} {is_adjacent}")
-                if is_adjacent:
-                    total += int(current_number)
-                current_number, is_adjacent = "", False
-
-        for x in range(len(line)):
-            c = line[x]
+        for x in range(len(line) + 1):
+            c = line[x] if x < len(line) else ""
             if not c.isdigit():
-                add_current()
+                if current_number:
+                    # print(f"{current_number} {is_adjacent}")
+                    if is_adjacent:
+                        total += int(current_number)
+                    current_number, is_adjacent = "", False
             else:
                 current_number += c
                 for xx in range(x - 1, x + 2):
                     for yy in range(y - 1, y + 2):
                         is_adjacent = is_adjacent or check_adjacent(grid, xx, yy)
-        # I missed this condition at first.
-        # How did you smooth out this edge case?
-        add_current()
-        # print("---")
     return total
 
 
@@ -95,7 +80,7 @@ SAMPLE = """467..114..
 
 with open("day03/input.txt", "r") as file:
     all_lines = file.read()
-# r = part1(all_lines)
-# print(f"part one {r}")
+r = part1(all_lines)
+print(f"part one {r}")
 r = part2(all_lines)
 print(f"part two {r}")
