@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "advent23"
+version = "0.1.0"
+description = ""
+authors = ["wolffiex <adam@sparko.local>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+ipython = "^8.18.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
