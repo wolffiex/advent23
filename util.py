@@ -11,4 +11,4 @@ class Source:
         assert self.filename
         with open(self.filename, "r") as file:
             for line in file:
-                yield line
+                yield line.rstrip("\n")

@@ -96,13 +96,11 @@ def part_one(input):
     assert seed_line.startswith("seeds: ")
     seeds = [int(value) for value in seed_line[len("seeds: "):].split()]
     maps = get_maps(input)
-    console.print(maps)
     min_seed = None
     for seed in seeds:
         output = apply_maps(seed, maps)
         if not min_seed or output < min_seed:
             min_seed= output
-        console.print(f"{seed} : {output}")
     return min_seed
 
 def get_maps(input):
@@ -110,7 +108,6 @@ def get_maps(input):
     current_map : Map = []
     for line in input:
         if not line.strip():
-            print('skip')
             continue
         elif line.endswith("map:"):
             current_map = []
@@ -172,9 +169,11 @@ humidity-to-location map:
 56 93 4""", "day05/input.txt")
 
 
-with open("day05/input.txt", "r") as file:
-    all_lines = file.read()
-# result1 = part_one(iter(all_lines.split("\n")))
-result2 = part_two(iter(all_lines.split("\n")))
-# result2 = part_two(source.get_sample())
+result1 = part_one(iter(source.get_sample()))
+console.print(f":one: {result1}")
+result1 = part_one(iter(source.get_input()))
+console.print(f":one: {result1}")
+result2 = part_two(source.get_sample())
+console.print(f":two: {result2}")
+result2 = part_two(source.get_input())
 console.print(f":two: {result2}")
