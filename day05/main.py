@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Tuple
 from util import Source
 from rich.console import Console
+from itertools import chain
 
 # Create a console object
 console = Console()
@@ -38,23 +39,16 @@ def part_two(input):
         seed_start, seed_length = seeds[:2]
         seeds = seeds[2:]
         unmapped : List[SeedRange]= [SeedRange(seed_start, seed_start + seed_length -1)]
-        console.print(f"Seed: {unmapped[0]}")
         mapped = []
-        for i, m in enumerate(maps):
-            console.print(f"MAP {i}")
-            console.print(f" start with {unmapped}")
+        for m in maps:
             for range_map in m:
-                thisone =unmapped
-                unmapped = []
-                for unm, ma in map(lambda sr: apply_range_map(sr, range_map), thisone):
-                    console.print(f"results unapped{unm}  mapp{ma}")
-                    # unmapped, new_mapped = zip(*results)
-                    unmapped += unm
-                    mapped += ma
-            console.print(f"DONE {unmapped}   mapped{mapped}")
+                if unmapped:
+                    result = [apply_range_map(sr, range_map) for sr in unmapped]
+                    unmapped_tuple, mapped_tuple = [*zip(*result)]
+                    unmapped = [*chain(*unmapped_tuple)]
+                    mapped.extend(chain(*mapped_tuple))
             unmapped += mapped
             mapped = []
-        console.print(f"  {unmapped}")
         for sr in unmapped:
             if not lowest or lowest > sr.start:
                 lowest = sr.start
@@ -62,11 +56,9 @@ def part_two(input):
                 
 
 def apply_range_map(seed_range:SeedRange, range_map:RangeMap) -> Tuple[List[SeedRange], List[SeedRange]]:
-    console.print(f"apply {seed_range}   {range_map}")
     range_end = range_map.src_start + range_map.length
     mapped = [SeedRange(range_map.src_start, range_end)]
     unmapped = [SeedRange(seed_range.start, range_map.src_start), SeedRange(range_end, seed_range.end)]
-    # console.print(f" stunmap {unmapped}")
     def clip_ranges(ranges):
         for sr in ranges:
             sr.start = max(seed_range.start, sr.start)
@@ -75,10 +67,8 @@ def apply_range_map(seed_range:SeedRange, range_map:RangeMap) -> Tuple[List[Seed
     mapped = clip_ranges(mapped)
     if mapped:
         offset = range_map.dest_start - range_map.src_start
-        console.print(f"Hi {mapped[0]} {range_map}")
         mapped[0].start += offset
         mapped[0].end += offset
-        console.print(f"HO {mapped[0]}")
 
 
     return clip_ranges(unmapped), mapped
@@ -94,7 +84,6 @@ def get_maps2(input):
             current_map = []
             maps.append(current_map)
         else:
-            # console.print(line.split())
             current_map.append(RangeMap.from_string(line))
     return maps
 
